@@ -1,16 +1,8 @@
-Hello! and thank you for checking out my batch anti-virus its in early beta and doesnt do much but its a pretty good option for a free anti-virus now it has basic scaning and vuln scaner
-more options coming soon!
-made by CH 
-made by Team: TCB
-------------------------------------------------------------------
 UPD LOG:
-------------------------------------------------------------------
-[+] more features!
--------------------------------
-[+] better look + settings
---------------------------------
-[+] better system scans
---------------------------------
-[+] network/WI-FI stuff
---------------------------------
-[!] we also removed you not needing administrator (you can still run it without but some features wont work!)
+[ + ] INSTA SYSTEM SCANS
+------------------------------
+[ + ] KINDA BETTER UI
+------------------------------
+[ + ] BETTER SYSTEMS, CODE, AND MORE!
+-------------------------------------------------
+btw sorry for not posting for a while lol i was doing alot but anyways updated ver of my antivirus in batch and open source aswell in short i made alot of things better for a batch anti-virus i would give it a try!
