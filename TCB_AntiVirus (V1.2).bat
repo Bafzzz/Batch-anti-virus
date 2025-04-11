@@ -6,7 +6,7 @@ mode con: cols=80 lines=35
 :MENU
 cls
 echo ===============================================================================
-echo                               TCB's Anti-Virus V2
+echo                               TCB's Anti-Virus V 1.2
 echo ===============================================================================
 echo.
 echo    [1] Quick System Scan          [5] Check System Files
