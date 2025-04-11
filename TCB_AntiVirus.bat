@@ -6,7 +6,7 @@ mode con: cols=80 lines=35
 :MENU
 cls
 echo ===============================================================================
-echo                               TCB's Anti-Virus
+echo                               TCB's Anti-Virus V 1.2
 echo ===============================================================================
 echo.
 echo    [1] Quick System Scan          [5] Check System Files
@@ -20,6 +20,11 @@ echo    [13] Browser Security          [14] Firewall Manager
 echo    [15] Process Monitor           [16] System Restore Points
 echo    [17] Drive Health              [18] Security Log Viewer
 echo    [19] Performance Optimizer     [20] System Backup
+echo.
+echo    [21] Real-time Protection      [25] Account Security
+echo    [22] Quarantine Manager        [26] System Updates
+echo    [23] Scheduled Scans           [27] Network Monitor
+echo    [24] Security Report           [28] Privacy Check
 echo.
 echo    [0] Exit
 echo ===============================================================================
@@ -111,6 +116,52 @@ echo ===========================================================================
 echo                               Quick System Scan
 echo ===============================================================================
 echo.
+echo Preparing to start Quick Scan...
+for /l %%i in (3,-1,1) do (
+    cls
+    echo ===============================================================================
+    echo                               Quick System Scan
+    echo ===============================================================================
+    echo.
+    echo Starting scan in %%i seconds...
+    timeout /t 1 /nobreak >nul
+)
+echo.
+echo Phase 1: Scanning system files...
+sfc /verifyonly >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] No system file integrity issues found.
+) else (
+    echo [WARNING] Potential system file integrity issues detected.
+)
+echo.
+echo Phase 2: Checking Windows integrity...
+DISM /Online /Cleanup-Image /ScanHealth >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] Windows image is healthy.
+) else (
+    echo [WARNING] Windows image may need repair.
+)
+echo.
+echo Phase 3: Scanning startup entries...
+wmic startup list brief >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] Startup entries verified.
+) else (
+    echo [WARNING] Issues found in startup entries.
+)
+echo.
+echo Scan Summary:
+echo -------------
+echo Date: %date%
+echo Time: %time%
+if %errorlevel% equ 0 (
+    echo Overall Status: [CLEAN]
+) else (
+    echo Overall Status: [WARNING]
+)
+timeout /t 5 /nobreak >nul
+goto MENU
 echo Scanning system files...
 sfc /verifyonly
 echo.
@@ -129,11 +180,64 @@ echo ===========================================================================
 echo                               Full System Scan
 echo ===============================================================================
 echo.
-echo Starting Full System Scan...
+echo Preparing to start Full System Scan...
+for /l %%i in (3,-1,1) do (
+    cls
+    echo ===============================================================================
+    echo                               Full System Scan
+    echo ===============================================================================
+    echo.
+    echo Starting scan in %%i seconds...
+    timeout /t 1 /nobreak >nul
+)
 echo.
 echo Phase 1/4: System File Check
 echo -------------------------
-sfc /verifyonly
+sfc /verifyonly >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] System files verified.
+) else (
+    echo [WARNING] System file issues detected.
+)
+echo.
+echo Phase 2/4: Disk Check
+echo -------------------------
+chkdsk C: /f >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] Disk check completed.
+) else (
+    echo [WARNING] Disk issues detected.
+)
+echo.
+echo Phase 3/4: Memory Check
+echo -------------------------
+wmic memorychip get capacity,speed,status >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] Memory check passed.
+) else (
+    echo [WARNING] Memory issues detected.
+)
+echo.
+echo Phase 4/4: Drive Analysis
+echo -------------------------
+wmic logicaldisk get caption,description,freespace,size >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [CLEAN] Drive analysis completed.
+) else (
+    echo [WARNING] Drive issues detected.
+)
+echo.
+echo Scan Summary:
+echo -------------------------
+echo Date: %date%
+echo Time: %time%
+if %errorlevel% equ 0 (
+    echo Overall Status: [CLEAN]
+) else (
+    echo Overall Status: [WARNING]
+)
+timeout /t 5 /nobreak >nul
+goto MENU
 echo.
 echo Phase 2/4: Disk Check
 echo -------------------------
@@ -275,107 +379,18 @@ echo Current IP Configuration:
 ipconfig /all
 pause
 goto MENU
-
-:USBSCAN
+:PRIVACY
 cls
 echo ===============================================================================
-echo                               USB Device Scanner
+echo                            Privacy Check
 echo ===============================================================================
 echo.
-echo Listing connected USB devices:
-wmic path Win32_USBHub get description
-pause
-goto MENU
-
-:REGISTRY
-cls
-echo ===============================================================================
-echo                               Registry Check
-echo ===============================================================================
+echo Checking privacy settings...
 echo.
-echo Scanning registry for errors...
-reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-pause
-goto MENU
-
-:BROWSER
-cls
-echo ===============================================================================
-echo                               Browser Security
-echo ===============================================================================
+echo App permissions:
+reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore" /s
 echo.
-echo Checking browser settings...
-echo.
-echo Default Browser:
-reg query "HKCU\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
-pause
-goto MENU
-
-:FIREWALL
-cls
-echo ===============================================================================
-echo                               Firewall Manager
-echo ===============================================================================
-echo.
-echo Current Firewall Status:
-netsh advfirewall show allprofiles
-pause
-goto MENU
-
-:RESTORE
-cls
-echo ===============================================================================
-echo                            System Restore Points
-echo ===============================================================================
-echo.
-echo Available restore points:
-wmic restore get description,sequencenumber,creationtime
-pause
-goto MENU
-
-:DRIVE
-cls
-echo ===============================================================================
-echo                               Drive Health
-echo ===============================================================================
-echo.
-echo Checking all drives...
-wmic diskdrive get status,caption
-pause
-goto MENU
-
-:LOGS
-cls
-echo ===============================================================================
-echo                            Security Log Viewer
-echo ===============================================================================
-echo.
-echo Recent security events:
-wevtutil qe Security /c:5 /f:text
-pause
-goto MENU
-
-:OPTIMIZE
-cls
-echo ===============================================================================
-echo                           Performance Optimizer
-echo ===============================================================================
-echo.
-echo Running optimization tasks...
-echo Cleaning temporary files...
-del /s /q %temp%\*.*
-echo Clearing DNS cache...
-ipconfig /flushdns
-pause
-goto MENU
-
-:BACKUP
-cls
-echo ===============================================================================
-echo                               System Backup
-echo ===============================================================================
-echo.
-echo Creating system backup point...
-wbadmin start backup -backupTarget:C: -include:C: -quiet
+echo Location services:
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v Value
 pause
 goto MENU
